@@ -1,0 +1,12 @@
+services:
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit
+
+    container_name: aws_rag_streamlit
+
+    ports:
+      - "8501:8501"
+
+    restart: unless-stopped
