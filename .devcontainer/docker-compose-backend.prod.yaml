@@ -1,26 +1,37 @@
 version: "3.9"
 
 services:
+
   app:
     build:
-      context: ..
-      dockerfile: .devcontainer/Dockerfile
-    volumes:
-      - ../..:/workspaces:cached
-    command: sleep infinity
+      context: .
+      dockerfile: Dockerfile
+    command: uvicorn app.server:app --host 0.0.0.0 --port 8000
     ports:
-      - "8000:8000"  
+      - "8000:8000"
+    env_file:
+      - .env
     depends_on:
       - mongo
       - valkey
       - qdrant
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
-      QDRANT_URL: http://qdrant:6333
+    restart: always
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: rq worker --url redis://valkey:6379
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+      - valkey
+      - qdrant
+    restart: always
 
   mongo:
-    image: mongo
+    image: mongo:7.0
     restart: always
     ports:
       - "27017:27017"
@@ -28,17 +39,19 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
     volumes:
-      - mongodb_data:/data/db/
+      - mongodb_data:/data/db
 
   valkey:
     image: valkey/valkey:latest
+    restart: always
     ports:
       - "6379:6379"
     volumes:
-      - valkey_data:/usr/local/etc/valkey
+      - valkey_data:/data
 
   qdrant:
     image: qdrant/qdrant:latest
+    restart: always
     ports:
       - "6333:6333"
     volumes:
