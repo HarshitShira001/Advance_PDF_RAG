@@ -1,34 +1,39 @@
 # PDF RAG
 
-A containerized FastAPI-based Retrieval-Augmented Generation (RAG) application for uploading PDFs and asking context-based questions.
+A containerized **Retrieval-Augmented Generation (RAG)** application for uploading PDFs and generating context-aware answers using semantic search and LLMs.
 
 ## Features
 
-- PDF storage using AWS S3
-- Text extraction and chunking using LangChain
-- Semantic embeddings using Jina Embeddings
-- Vector storage and similarity search using Qdrant
-- Asynchronous PDF processing using RQ + Valkey
-- File metadata and results stored in MongoDB
-- AI responses generated using `openai/gpt-oss-120b`
-- Docker & Docker Compose for containerized deployment
-- Nginx for reverse proxy
-- Designed for AWS EC2 cloud deployment
+* PDF storage using **AWS S3**
+* Text extraction and chunking using **LangChain**
+* Semantic **embeddings** for document representation
+* Vector storage and similarity search using **Qdrant**
+* Asynchronous document processing using **RQ + Valkey**
+* Metadata and processing status stored in **MongoDB**
+* AI responses generated using `openai/gpt-oss-120b`
+* Containerized deployment using **Docker & Docker Compose**
+* **Nginx** reverse proxy for secure traffic routing
+* **HTTPS/SSL certificate** for encrypted communication
+* **SSH** for secure remote server administration
+* **AWS IAM** for access and permission management
+* Designed for **AWS EC2 cloud deployment**
 
 ## Tech Stack
 
-| Component | Technology |
-|---|---|
-| Backend | FastAPI, Python |
-| LLM | `openai/gpt-oss-120b` |
-| Embeddings | Jina Embeddings |
-| Vector DB | Qdrant |
-| Database | MongoDB |
-| Task Queue | RQ + Valkey |
-| Cloud Storage | AWS S3 |
-| Reverse Proxy | Nginx |
-| Containerization | Docker, Docker Compose |
-| Cloud | AWS EC2 |
+| Component         | Technology             |
+| ----------------- | ---------------------- |
+| Backend           | FastAPI, Python        |
+| LLM               | `openai/gpt-oss-120b`  |
+| Embeddings        | Embedding Model        |
+| Vector DB         | Qdrant                 |
+| Database          | MongoDB                |
+| Task Queue        | RQ + Valkey            |
+| Storage           | AWS S3                 |
+| Access Management | AWS IAM                |
+| Reverse Proxy     | Nginx                  |
+| Security          | HTTPS/SSL, SSH         |
+| Containerization  | Docker, Docker Compose |
+| Cloud             | AWS EC2                |
 
 ## Setup
 
@@ -37,8 +42,6 @@ A containerized FastAPI-based Retrieval-Augmented Generation (RAG) application f
 Create a `.env` file:
 
 ```env
-GROQ_API_KEY=<your_groq_api_key>
-JINA_API_KEY=<your_jina_api_key>
 AWS_ACCESS_KEY_ID=<your_access_key>
 AWS_SECRET_ACCESS_KEY=<your_secret_key>
 AWS_REGION=<your_aws_region>
@@ -57,7 +60,7 @@ pip install -r requirements.txt
 docker compose up -d
 ```
 
-### Run the RQ Worker
+### Run RQ Worker
 
 ```bash
 sh rq.sh
@@ -67,14 +70,6 @@ sh rq.sh
 
 ```bash
 sh run.sh
-```
-
-## API
-
-### Qdrant Dashboard
-
-```text
-http://localhost:6333/dashboard
 ```
 
 ## RAG Pipeline
@@ -88,17 +83,53 @@ RQ + Valkey
  ↓
 PDF Processing
  ↓
-Jina Embeddings
+Embeddings
  ↓
 Qdrant
  ↓
-Similarity Search
+Semantic Search
  ↓
 openai/gpt-oss-120b
  ↓
 AI Answer
 ```
 
-## Deployment
+## API
 
-The application can be deployed on AWS EC2 using Docker Compose, with AWS S3 providing scalable object storage, Nginx acting as a reverse proxy, and Docker containers managing the application services.
+FastAPI Swagger documentation:
+
+```text
+http://localhost:8000/docs
+```
+
+Qdrant Dashboard:
+
+```text
+http://localhost:6333/dashboard
+```
+
+## Deployment & Security
+
+The application is designed for **AWS EC2** deployment using Docker Compose.
+
+**Nginx** acts as a reverse proxy and routes external traffic to internal application services.
+
+**HTTPS/SSL certificates** provide encrypted communication between clients and the server.
+
+**SSH** is used for secure remote server administration and deployment.
+
+**AWS IAM** manages access permissions for AWS resources following the principle of least privilege.
+
+```text
+Client
+  ↓
+HTTPS / SSL
+  ↓
+Nginx
+  ↓
+FastAPI / Streamlit
+  ↓
+Docker Services
+  ↓
+AWS S3 / MongoDB / Qdrant / RQ
+```
