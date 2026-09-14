@@ -133,3 +133,5 @@ Docker Services
   ↓
 AWS S3 / MongoDB / Qdrant / RQ
 ```
+demo video
+https://drive.google.com/file/d/1Hb5Xu1PLU9hUcmTJQdFIrinyFvICuXqU/view
